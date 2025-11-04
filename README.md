@@ -10,7 +10,7 @@ A simple and handy URL shortening service built with Flask.
 - Clean and responsive UI
 - RESTful API support
 
-## Kurulum
+## Setup
 
 ```bash
 # # Install required packages
