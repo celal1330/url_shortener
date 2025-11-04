@@ -16,7 +16,6 @@ A simple and handy URL shortening service built with Flask.
 # # Install required packages
 pip install -r requirements.txt
 
-# Uygulamayı çalıştırın
 python url_shortener.py
 ```
 
