@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>URL Shortener</title>
+
+  <!-- just keeping styles here for now, maybe split later -->
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(130deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.25);
+      padding: 35px;
+      max-width: 600px;
+      width: 100%;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 5px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 25px;
+      font-size: 15px;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      font-weight: 500;
+      color: #555;
+      margin-bottom: 6px;
+    }
+
+    input[type="url"],
+    input[type="text"] {
+      width: 100%;
+      padding: 11px 14px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      font-size: 15px;
+      transition: border-color 0.2s ease;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    .result {
+      display: none;
+      margin-top: 25px;
+      background: #f9fafc;
+      padding: 20px;
+      border-radius: 8px;
+    }
+
+    .result.show {
+      display: block;
+    }
+
+    .short-url {
+      color: #667eea;
+      font-weight: 600;
+      font-size: 18px;
+      word-break: break-all;
+      margin: 10px 0;
+    }
+
+    .copy-btn {
+      background: #28a745;
+      border: none;
+      border-radius: 6px;
+      color: #fff;
+      padding: 10px 18px;
+      cursor: pointer;
+    }
+
+    .copy-btn:hover {
+      background: #218838;
+    }
+
+    .error {
+      display: none;
+      margin-top: 15px;
+      background: #fdeaea;
+      color: #c0392b;
+      border-radius: 6px;
+      padding: 10px;
+    }
+
+    .error.show {
+      display: block;
+    }
+
+    .stats-link {
+      color: #667eea;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .stats-link:hover {
+      text-decoration: underline;
+    }
+
+    /* note: maybe make dark mode later */
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>URL Shortener</h1>
+    <p class="subtitle">Easily shorten long links. </p>
+
+    <form id="shortenForm">
+      <div class="form-group">
+        <label for="url">Long URL:</label>
+        <input
+          type="url"
+          id="url"
+          name="url"
+          placeholder="https://example.com/some/long/url"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="custom_code">Custom Code (optional):</label>
+        <input
+          type="text"
+          id="custom_code"
+          name="custom_code"
+          placeholder="my-custom-link"
+          pattern="[a-zA-Z0-9-_]+"
+          title="Only letters, numbers, dashes, and underscores are allowed"
+        />
+      </div>
+
+      <button type="submit">Shorten 🎯</button>
+    </form>
+
+    <div class="error" id="error"></div>
+
+    <div class="result" id="result">
+      <p><strong>Short link is ready!</strong></p>
+      <p class="short-url" id="shortUrl"></p>
+      <button class="copy-btn" onclick="copyToClipboard()">Copy</button>
+      <p style="margin-top: 15px;">
+        <a href="#" id="statsLink" class="stats-link" target="_blank"
+          >View Statistics</a
+        >
+      </p>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById("shortenForm");
+    const errorDiv = document.getElementById("error");
+    const resultDiv = document.getElementById("result");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const url = document.getElementById("url").value;
+      const customCode = document.getElementById("custom_code").value;
+
+      // clean old state
+      errorDiv.classList.remove("show");
+      resultDiv.classList.remove("show");
+
+      try {
+        const formData = new FormData();
+        formData.append("url", url);
+        formData.append("custom_code", customCode);
+
+        const res = await fetch("/shorten", {
+          method: "POST",
+          body: formData,
+        });
+
+        const data = await res.json();
+        console.log("Server response:", data); // might remove later
+
+        if (res.ok) {
+          document.getElementById("shortUrl").textContent = data.short_url;
+          document.getElementById("statsLink").href = "/stats/" + data.short_code;
+          resultDiv.classList.add("show");
+        } else {
+          errorDiv.textContent = data.error || "An error occurred.";
+          errorDiv.classList.add("show");
+        }
+      } catch (err) {
+        // TODO: show nicer popup instead of alert
+        errorDiv.textContent = "Connection error: " + err.message;
+        errorDiv.classList.add("show");
+      }
+    });
+
+    function copyToClipboard() {
+      const shortUrl = document.getElementById("shortUrl").textContent;
+      navigator.clipboard
+        .writeText(shortUrl)
+        .then(() => alert("Short URL copied to clipboard!"))
+        .catch(() => alert("Copy failed."));
+    }
+
+    // console.log("Ready to shorten some URLs 😎");
+  </script>
+</body>
+</html>

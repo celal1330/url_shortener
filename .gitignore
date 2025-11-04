@@ -1,0 +1,12 @@
+﻿# Python virtual envs
+venv/
+.venv/
+
+# Byte-compiled / caches
+__pycache__/
+*.pyc
+
+# Local data / secrets
+urls.json
+.env
+

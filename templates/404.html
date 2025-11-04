@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Oops... 404 Not Found</title>
+
+  <!-- Honestly just eyeballing the colors here -->
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(140deg, #6a85b6 0%, #bac8e0 100%);
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+    }
+
+    .wrapper {
+      text-align: center;
+      max-width: 600px;
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 110px; /* was 120px, felt too big */
+      margin: 0 0 10px 0;
+      letter-spacing: 2px;
+    }
+
+    p {
+      font-size: 22px;
+      line-height: 1.4;
+      margin: 8px 0;
+    }
+
+    a {
+      color: #fff;
+      text-decoration: none;
+      background: rgba(255, 255, 255, 0.25);
+      padding: 10px 25px;
+      border-radius: 20px;
+      display: inline-block;
+      margin-top: 25px;
+      transition: 0.25s ease background;
+    }
+
+    a:hover {
+      background: rgba(255, 255, 255, 0.35);
+    }
+
+    /* Might add a subtle shadow later */
+    .emoji {
+      font-size: 60px;
+      opacity: 0.8;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrapper">
+    <!-- A bit of extra personality -->
+    <div class="emoji">🤷‍♂️</div>
+    <h1>404</h1>
+    <p>Hmm... I can’t seem to find that short link.</p>
+    <p>Maybe it expired, or maybe I just imagined it. 😅</p>
+    <a href="/">← Back to Home</a>
+  </div>
+
+  <!-- Leaving this here just in case I need it later -->
+  <script>
+    console.log("404 page loaded — probably someone mistyped a link 🤔");
+  </script>
+</body>
+</html>
